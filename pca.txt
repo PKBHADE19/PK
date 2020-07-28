@@ -1,0 +1,25 @@
+import numpy as np
+import pandas as pd
+import scipy.linalg as la
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
+a=pd.read_csv('mnist_train.csv')
+df = StandardScaler().fit_transform(a)
+co=(df.transpose()).dot(df)
+evals, evecs = la.eig(co)
+s=0
+ans=0
+i=0
+h1=[]
+h2=[]
+while(ans<0.9 and i<len(evals)):
+  p=[]
+  s=s+evals[i]
+  ans=s/sum(evals)
+  i=i+1
+  h1.append(i)
+  h2.append(ans)  
+fig, ax = plt.subplots()
+ax.grid()
+ax.plot(h1, h2)
+plt.show()
