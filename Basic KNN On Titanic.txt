@@ -1,0 +1,49 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import scipy.linalg as la
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.preprocessing import StandardScaler
+a=pd.read_csv('titanic_train.csv')
+a1=a[['Pclass','Sex','SibSp','Parch','Embarked']]
+a1.replace(to_replace =["male", "female"], value =[1,0],inplace=True) 
+a1.replace(to_replace =["S", "C","Q"], value =[2,0,1],inplace=True) 
+a1['Pclass'].replace(to_replace =np.nan,value =a1['Pclass'].mean(),inplace=True) 
+a1['Sex'].replace(to_replace =np.nan,value =a1['Sex'].mean(),inplace=True) 
+a1['Parch'].replace(to_replace =np.nan,value =a1['Parch'].mean(),inplace=True) 
+a1['Embarked'].replace(to_replace =np.nan,value =a1['Embarked'].mean(),inplace=True) 
+b=pd.read_csv('titanic_train.csv')
+b1=b[['Pclass','Sex','SibSp','Parch','Embarked']]
+b1.replace(to_replace =["male", "female"], value =[1,0],inplace=True) 
+b1.replace(to_replace =["S", "C","Q"], value =[2,0,1],inplace=True) 
+b1['Pclass'].replace(to_replace =np.nan,value =b1['Pclass'].mean(),inplace=True) 
+b1['Sex'].replace(to_replace =np.nan,value =b1['Sex'].mean(),inplace=True) 
+b1['Parch'].replace(to_replace =np.nan,value =b1['Parch'].mean(),inplace=True) 
+b1['Embarked'].replace(to_replace =np.nan,value =b1['Embarked'].mean(),inplace=True) 
+
+xtrain=a1[:600]
+ytrain=a['Survived']
+ytrain=ytrain[:600]
+xct=a1[601:892]
+yct=a['Survived']
+yct=yct[601:892]
+
+k1=[]
+ac=[]
+ac1=[]
+for k in range(1,30):
+  classifier = KNeighborsClassifier(n_neighbors=k)
+  classifier.fit(xtrain, ytrain)
+  yp = classifier.predict(xtrain)
+  yp1=classifier.predict(xct)
+  k1.append(k)
+  t=confusion_matrix(ytrain, yp)
+  t1=confusion_matrix(yct, yp1)
+  ac.append(1-(np.sum(t.diagonal())/np.sum(t)))
+  ac1.append(1-(np.sum(t1.diagonal())/np.sum(t1)))
+fig, ax = plt.subplots()
+ax.plot(k1, ac)
+ax.plot(k1, ac1)
+ax.grid()
+plt.show()
